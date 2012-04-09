@@ -1,0 +1,4 @@
+PUSH 2
+PUSH 4
+ADD
+PRINT
