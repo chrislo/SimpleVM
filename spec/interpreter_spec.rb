@@ -30,54 +30,47 @@ describe Interpreter do
       @mock_vm = mock()
     end
 
-    it "should parse PUSH" do
+    it "should interpret PUSH" do
       @mock_vm.expects(:push).with(2)
       i = Interpreter.new "PUSH 2", @mock_vm
       i.run
     end
 
-    it "should parse POP" do
+    it "should interpret POP" do
       @mock_vm.expects(:pop)
       Interpreter.new("POP\n", @mock_vm).run
     end
 
-    it "should parse ADD" do
+    it "should interpret ADD" do
       @mock_vm.expects(:add)
       Interpreter.new("ADD\n", @mock_vm).run
     end
 
-    it "should parse DUP" do
+    it "should interpret DUP" do
       @mock_vm.expects(:dup)
       Interpreter.new("DUP\n", @mock_vm).run
     end
 
-    it "should parse PRINT" do
+    it "should interpret PRINT" do
       @mock_vm.expects(:print)
       Interpreter.new("PRINT\n", @mock_vm).run
     end
 
-    it "should parse JUMP" do
+    it "should interpret JUMP" do
       @mock_vm.expects(:push).with(4)
       Interpreter.new("JUMP 2\nPUSH 2\nPUSH 4\n", @mock_vm).run
     end
 
-    it "should parse IFEQ with 0" do
+    it "should interpret IFEQ with 0" do
       vm = VM.new
       Interpreter.new("PUSH 0\nIFEQ 3\nPUSH 2\nPUSH 4\n", vm).run
       vm.stack.must_equal [0, 2, 4]
     end
 
-    it "should parse IFEQ with jump" do
+    it "should interpret IFEQ with jump" do
       vm = VM.new
       Interpreter.new("PUSH 1\nIFEQ 3\nPUSH 2\nPUSH 4\n", vm).run
       vm.stack.must_equal [1, 4]
-    end
-
-    it "should parse IFEQ with 0" do
-      vm = VM.new
-      vm.expects(:push).with(0)
-      vm.expects(:push).with(4)
-      Interpreter.new("PUSH 0\nIFEQ 3\nPUSH 2\nPUSH 4\n", vm).run
     end
 
     it "should run while no more instructions are availabe" do
