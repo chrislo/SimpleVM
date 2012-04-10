@@ -1,0 +1,8 @@
+* SimpleVM
+
+A simple stack-based virtual machine written in Ruby.
+
+Run the demo:
+
+: ruby runvm.rb examples/example.mc
+
