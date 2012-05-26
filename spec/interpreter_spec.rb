@@ -28,37 +28,54 @@ describe Interpreter do
   describe "run" do
     before do
       @mock_vm = mock()
+      @mock_register = mock()
+    end
+
+    def run_interpreter_with_instruction(instruction)
+      i = Interpreter.new instruction, @mock_vm, @mock_register
+      i.run
     end
 
     it "should interpret PUSH" do
       @mock_vm.expects(:push).with(2)
-      i = Interpreter.new "PUSH 2", @mock_vm
-      i.run
+      run_interpreter_with_instruction "PUSH 2"
     end
 
     it "should interpret POP" do
       @mock_vm.expects(:pop)
-      Interpreter.new("POP\n", @mock_vm).run
+      run_interpreter_with_instruction "POP"
     end
 
     it "should interpret ADD" do
       @mock_vm.expects(:add)
-      Interpreter.new("ADD\n", @mock_vm).run
+      run_interpreter_with_instruction "ADD"
     end
 
     it "should interpret DUP" do
       @mock_vm.expects(:dup)
-      Interpreter.new("DUP\n", @mock_vm).run
+      run_interpreter_with_instruction "DUP"
     end
 
     it "should interpret PRINT" do
       @mock_vm.expects(:print)
-      Interpreter.new("PRINT\n", @mock_vm).run
+      run_interpreter_with_instruction "PRINT"
     end
 
     it "should interpret JUMP" do
       @mock_vm.expects(:push).with(4)
-      Interpreter.new("JUMP 2\nPUSH 2\nPUSH 4\n", @mock_vm).run
+      run_interpreter_with_instruction "JUMP 2\nPUSH 2\nPUSH 4\n"
+    end
+
+    it "should interpret LOAD" do
+      @mock_register.expects(:load).with(0).returns(:contents_of_register)
+      @mock_vm.expects(:push).with(:contents_of_register)
+      run_interpreter_with_instruction "LOAD 0"
+    end
+
+    it "should interpret STORE" do
+      @mock_vm.expects(:pop).returns(:top_of_stack)
+      @mock_register.expects(:store).with(:top_of_stack, 0)
+      run_interpreter_with_instruction "STORE 0"
     end
 
     it "should interpret IFEQ with 0" do
@@ -75,7 +92,7 @@ describe Interpreter do
 
     it "should run while no more instructions are availabe" do
       @mock_vm.expects(:push).twice
-      Interpreter.new("PUSH 2\nPUSH 4", @mock_vm).run
+      run_interpreter_with_instruction "PUSH 2\nPUSH 4"
     end
   end
 end

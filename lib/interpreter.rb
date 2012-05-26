@@ -1,10 +1,11 @@
 require 'vm'
 
 class Interpreter
-  def initialize(source_code, vm = VM.new)
+  def initialize(source_code, vm = VM.new, register = Register.new)
     @instructions = source_code.split(/\n/)
     @ptr = 0
     @vm = vm
+    @register = register
   end
 
   def instructions
@@ -35,6 +36,12 @@ class Interpreter
       when /IFEQ (\d+)/
         next if @vm.top == 0
         @ptr = $1.to_i
+      when /LOAD (\d+)/
+        # push the contents of the register on to the stack
+        @vm.push @register.load $1.to_i
+      when /STORE (\d+)/
+        # store the top of the stack in the register
+        @register.store @vm.pop, $1.to_i
       end
     end
   end
